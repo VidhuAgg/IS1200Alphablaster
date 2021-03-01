@@ -53,15 +53,29 @@ int counter = 0;
 struct bullet b[10];
 int start = 1;
 int diffauto = 0;
+int health;
+int anim = 0;
+int test = 0;
+int anim1 = 127;
 
-char Start1[] = "Choose";
-char Start2[] = "Difficulty";
-char Start3[] = "L-Start, R-Diff";
+char Start1[] = "Welcome!";
+char Start2[] = "Alpha-Blaster 2.0";
+char Start3[] = "bt1-Instructions";
 int difficulty = 1;
-char difficultyShown[1] = "1";
+char Start4[] = "bt2-Start";
 
 char gameOver[] = "Your Score:";
 char gameOver2[] = "High Score:";
+char gameOvernew[] = "Congratulations!";
+char gameOvernew1[] = "New High Score:";
+int mainload = 1;
+char inst1[] = "bt 1 - Go up";
+char inst2[] = "bt 2 - Go Down";
+char inst3[] = "bt 3 - Fire!";
+char inst4[] = "boxes have ammo";
+
+
+
 int gameovercheck = 0;
 char buffer[5];
 char buffer2[5]; 
@@ -249,9 +263,11 @@ void moveleft()
 void Spawn()
 {
     int i;
+    difficulty = 1;
     counter = 0;
     diffauto = 0;
     ammo = 10;
+    health = 3;
     int k = 14;
     for(i = 0; i<14; i++)
     {
@@ -277,7 +293,8 @@ int Astroidcollison()
     {
         if(ast[i].x == 0 && ast[i].y == Alpha.y)
         {
-           	return 1;
+               health--;
+               return 1;
         }
     }
     return 0;
@@ -314,6 +331,17 @@ void labwork(void) {
 	}	
 }
 
+
+void left()
+{ 
+ anim1 = 0;
+ if(anim >= 64)
+ {
+  test++;
+ }
+ anim++;
+}
+
 /* Interrupt Service Routine */
 void user_isr(void) 
 {
@@ -321,9 +349,33 @@ void user_isr(void)
     {
 		IFS(0) = IFS(0) & 0xfffffeff;
 		timecount++;
-		spawnflag++;                   
+		spawnflag++; 
+                while (mainload)
+                { 
+                    int i;
+                    test = 0;
+                    anim = 0;
+                    for(i =0; i<128; i++)
+                    {
+             
+                       screen_refresh();
+                       int j;
+                       for(j = test; j < anim; j++)
+                       {
+                           Screen[j] = logo[anim1];
+                           Screen[j+256] = name[anim1];
+                           Screen[j+128] = credit[anim1];
+                           anim1++;
+                       }
+                       left();
+                       display_image(0,Screen);
+                       delay(150);
+                   }
+
+                   mainload=0;  
+                }                  
 		
-		while (gameovercheck)
+		while (gameovercheck && health ==0)
                {                               // function for when car has collided, gameover
 			T2CONCLR = 0x8000;
 			screen_refresh();
@@ -333,6 +385,16 @@ void user_isr(void)
                         sprintf(buffer2,"%d",count2);
                         display_string( 2, gameOver2 );
                         display_string( 3, buffer2 );
+                        if(count1 == count2)
+                        {
+                        
+			display_string( 0, gameOvernew );
+                        sprintf(buffer2,"%d",count2);
+                        display_string( 1, clear );
+                        display_string( 2, gameOvernew1 );
+                        display_string( 3, buffer2 );
+ 
+                        }
 			display_update();	
 			if(getbtns() == 0x04)
                         {                       // restart if button pushed
@@ -344,43 +406,50 @@ void user_isr(void)
 				T2CONSET = 0x8000;
 			}
 		}
+
+
 		
         while(start) 
         {                         // function for start, difficulty select
             count1= 0;
             T2CONCLR = 0x8000;
             screen_refresh();
-            difficultyShown[0] = difficulty + '0';
+          
+
+
             
             display_string( 0, Start1 );
             display_string( 1, Start2 );
-            display_string( 2, difficultyShown);
-            display_string( 3, Start3 );
-            display_update();	
+            display_string( 2, Start3);
+            display_string( 3, Start4 );
+            display_update();
+            	
             gameovercheck = 0;
 
             if(getbtns() == 0x04)
-            {
-                screen_refresh();
-                Spawn();
-                ScreenUpdate();
-                display_image(0,Screen);
-                start = 0;
-                T2CONSET = 0x8000;
-                break;
+            {   
+            
+                display_string( 0, inst1 );
+                display_string( 1, inst2 );
+                display_string( 2, inst3);
+                display_string( 3, inst4 );
+                display_update();
+                delay(5000);
+                
+              
+                 
+                
             }
 		
             if(getbtns() == 0x02)
             {
-                if(difficulty < 4)
-                {
-                    difficulty++;
-                }
-                else
-                {
-                    difficulty = 1;
-                }
-                delay( 175 );
+                     screen_refresh();
+                     Spawn();
+                     ScreenUpdate();
+                     display_image(0,Screen);
+                     start = 0;
+                     T2CONSET = 0x8000;
+                     break;
             }
         
 	}
