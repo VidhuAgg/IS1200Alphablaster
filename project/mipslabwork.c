@@ -59,7 +59,7 @@ int test = 0;
 int anim1 = 127;
 
 char Start1[] = "Welcome!";
-char Start2[] = "Alpha-Blaster 2.0";
+char Start2[] = "Alpha-Blaster2.0";
 char Start3[] = "bt1-Instructions";
 int difficulty = 1;
 char Start4[] = "bt2-Start";
