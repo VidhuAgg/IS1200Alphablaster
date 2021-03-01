@@ -52,6 +52,7 @@ int ammo = 10;
 int counter = 0;
 struct bullet b[10];
 int start = 1;
+int diffauto = 0;
 
 char Start1[] = "Choose";
 char Start2[] = "Difficulty";
@@ -249,7 +250,7 @@ void Spawn()
 {
     int i;
     counter = 0;
-    
+    diffauto = 0;
     ammo = 10;
     int k = 14;
     for(i = 0; i<14; i++)
@@ -383,6 +384,12 @@ void user_isr(void)
             }
         
 	}
+         
+        if(diffauto == 40)
+        {
+            difficulty++;
+            diffauto = 0;
+        }
             
         if(spawnflag == 6/difficulty)
         {                                  // determines how fast objects move and spawn
@@ -393,7 +400,7 @@ void user_isr(void)
             ScreenUpdate();
             display_image(0,Screen);
             gameovercheck = Astroidcollison();             
-           
+            diffauto++;
             ScoreUp();
             HighScore();
             
