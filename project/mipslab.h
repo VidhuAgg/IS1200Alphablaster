@@ -45,6 +45,9 @@ extern const uint8_t const astroid[8];
 extern const uint8_t const Ship[16];
 extern const uint8_t const bullet[8];
 extern const uint8_t const Supply[8];
+extern const uint8_t const logo[64];
+extern const uint8_t const name[64];
+extern const uint8_t const credit[64];
 extern uint8_t Screen[512];
 extern uint8_t Screen_Refresh[512];
 
