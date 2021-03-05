@@ -1,13 +1,9 @@
 /* mipslabwork.c
 
-   This file written 2015 by F Lundevall
-   Updated 2017-04-21 by F Lundevall
+   This file written 2015 by Vidhu Aggarwal, Yash Dhanore
+   Updated 2021-03-06 by Vidhu aggarwal
 
-   This file should be changed by YOU! So you must
-   add comment(s) here with your name(s) and date(s):
-
-   This file modified 2021-03-05 by Vidhu Aggarwal and Yash Dhanore
-   For copyright and licensing, see file COPYING */
+  
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
@@ -296,6 +292,12 @@ int Astroidcollison()
                health--;
                return 1;
         }
+        while( (box.x+8 > ast[i].x) && (ast[i].x > box.x-8) && (ast[i].y == box.y))
+        {
+               box.y = (rand() % 4);
+        }
+
+
     }
     return 0;
 }
@@ -467,6 +469,7 @@ void user_isr(void)
         {                                  // determines how fast objects move and spawn
             moveright();
             moveleft();
+                               
             spawnflag = 0;
             ScreenUpdate();
             display_image(0,Screen);
