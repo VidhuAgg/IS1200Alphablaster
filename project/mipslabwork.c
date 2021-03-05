@@ -6,8 +6,7 @@
    This file should be changed by YOU! So you must
    add comment(s) here with your name(s) and date(s):
 
-   This file modified 2017-04-31 by Ture Teknolog 
-   This file modified 2018-02-xx by Oscar Eklund and Vilhelm Elofsson
+   This file modified 2021-03-05 by Vidhu Aggarwal and Yash Dhanore
    For copyright and licensing, see file COPYING */
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
