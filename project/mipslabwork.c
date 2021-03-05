@@ -6,7 +6,8 @@
    This file should be changed by YOU! So you must
    add comment(s) here with your name(s) and date(s):
 
-   This file modified 2021-03-01 by Yash Dhanore and Vidhu Aggarwal
+   This file modified 2017-04-31 by Ture Teknolog 
+   This file modified 2018-02-xx by Oscar Eklund and Vilhelm Elofsson
    For copyright and licensing, see file COPYING */
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
@@ -96,7 +97,7 @@ void labinit(void)
 	*porte = 0x0; // initialize to 0
 	TRISDSET = 0xfe0; // set bit 11-5 of PORT D as output
 	
-	PR2 = 31250;
+	PR2 = 1953;
 	T2CON = 0x70; // sets prescale to 256
 	TMR2 = 0;
 	T2CONSET = 0x8000; // set bit 15 to 1 (enable timer)
@@ -157,29 +158,29 @@ void ScreenUpdate()
     screen_refresh();
     for(i=0;i<10;i++)
     {
-        if(b[i].x>=0 && b[i].x<14){
+        if(b[i].x>=0 && b[i].x<105){
             for(i2=0;i2<8;i2++)
             { 
-                Screen[16+(8*b[i].x)+i2+128*b[i].y] = bullet[i2];//bullet image;
+                Screen[16+b[i].x+i2+128*b[i].y] = bullet[i2];//bullet image;
             }
         }
     }
     int t1;
     for(t1=0;t1<14;t1++)
     {   
-        if(ast[t1].x>=0 && ast[t1].x<14){
+        if(ast[t1].x>=0 && ast[t1].x<105){
             for(t=0; t< 8; t++){
-                Screen[16+(8*ast[t1].x)+t+128*ast[t1].y] = astroid[t];//ast image;
+                Screen[16+ast[t1].x+t+(128*ast[t1].y)] = astroid[t];//ast image;
             }
         }
     }
     for(i3 = 0; i3 < 16; i3++){
         Screen[i3 + (128 * Alpha.y)] = Ship[i3];//image ship
     }
-    if(box.x>0 && box.x<14){
+    if(box.x>0 && box.x<105){
         for(j1=0;j1<8;j1++)
         {
-           Screen[16+(8*box.x)+j1+box.y*128] = Supply[j1];
+           Screen[16+box.x+j1+(box.y*128)] = Supply[j1];
         }
     }
 }
@@ -195,7 +196,7 @@ void bulletcol()
         if(b[j].x== box.x && b[j].y == box.y)
         {
                 ammo = ammo + 5;
-                box.x = 28;
+                box.x = 224;
                 box.y = rand() % 4;
                 b[j].x = -1;
                 if(ammo>10)
@@ -209,7 +210,7 @@ void bulletcol()
             if((b[j].x == ast[i].x) && b[j].y == ast[i].y)
             {
             
-                ast[i].x = ast[i].x + 13;
+                ast[i].x = ast[i].x + 104;
                 ast[i].y = rand() % 4;
                 b[j].x = -1;
             }
@@ -229,7 +230,7 @@ void moveright()
    int j;
    for(j = 0; j<10; j++)
    {
-      if(b[j].x >= 0 && b[j].x<14)
+      if(b[j].x >= 0 && b[j].x<105)
         {
             b[j].x++;
         }
@@ -245,14 +246,14 @@ void moveleft()
     {
         if(ast[i].x<=0)
         {
-            ast[i].x = 14;
+            ast[i].x = 112;
             ast[i].y = rand() % 4;
         }
         ast[i].x--;
     }
     if(box.x<=0)
     {
-        box.x = 28;
+        box.x = 224;
         box.y = rand() % 4;
     }
     box.x--;
@@ -267,15 +268,16 @@ void Spawn()
     diffauto = 0;
     ammo = 10;
     health = 3;
-    int k = 14;
+    int k = 112;
     for(i = 0; i<14; i++)
     {
-        ast[i].x = k++;
+        ast[i].x = k;
+        k = k+8;
         ast[i].y = (rand() % 4); 
     }
     Alpha.x = 0;
     Alpha.y = 0;
-    box.x = 28;
+    box.x = 224;
     box.y = (rand() % 4);
     int p;
     for (p=0; p<10; p++)
@@ -324,7 +326,7 @@ void labwork(void) {
                         if (ammo > 0)
                         {
                                 fire();
-        		        delay (150);
+        		        delay (300);
                         }
                         break;
 	}	
@@ -368,7 +370,7 @@ void user_isr(void)
                        }
                        left();
                        display_image(0,Screen);
-                       delay(150);
+                       delay(60);
                    }
 
                    mainload=0;  
@@ -453,13 +455,16 @@ void user_isr(void)
         
 	}
          
-        if(diffauto == 40)
+        if(diffauto == 640)
         {
+           if(difficulty<12)
+            {
             difficulty++;
             diffauto = 0;
+            }
         }
             
-        if(spawnflag == 6/difficulty)
+        if(spawnflag == 12/difficulty)
         {                                  // determines how fast objects move and spawn
             moveright();
             moveleft();
