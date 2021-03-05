@@ -245,7 +245,7 @@ void moveleft()
     {
         if(ast[i].x<=0)
         {
-            ast[i].x = 112;
+            ast[i].x = 105;
             ast[i].y = rand() % 4;
         }
         ast[i].x--;
