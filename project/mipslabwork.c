@@ -325,7 +325,7 @@ void labwork(void) {
                         if (ammo > 0)
                         {
                                 fire();
-        		        delay (300);
+        		        delay (500);
                         }
                         break;
 	}	
