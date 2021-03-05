@@ -467,7 +467,6 @@ void user_isr(void)
         {                                  // determines how fast objects move and spawn
             moveright();
             moveleft();
-                               //giving minor bugs at times missing target
             spawnflag = 0;
             ScreenUpdate();
             display_image(0,Screen);
