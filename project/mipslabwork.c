@@ -381,7 +381,7 @@ void user_isr(void)
                 }                  
 		
 		while (gameovercheck == 1 && health == 0)
-                {                               // function for when car has collided, gameover
+                {                               // function for when ship has collided, gameover
 			T2CONCLR = 0x8000;
 			screen_refresh();
                         letterpos = 0;
@@ -399,7 +399,7 @@ void user_isr(void)
                         while(letterpos < 3)
                         {
                             if(getbtns() == 0x04)
-                            {                       // restart if button pushed
+                            {                       // press button to move through the letters
 			        name1++;
                                 if(name1>90)
                                 {
@@ -416,8 +416,7 @@ void user_isr(void)
                                 delay(150);
                             }
                             if(getbtns() == 0x02)
-                            {                       // restart if button pushed
-		          	
+                            {                      
                                 letterpos++;
                                 
                           	name1 = 65;
@@ -438,7 +437,7 @@ void user_isr(void)
                         }
                         int j = 0;
                         int temp = 0;
-                        for(j = 0; j<12;j++)
+                        for(j = 0; j<12;j++)         //determining the position of new high score
                         { 
                                if(count1>Highscore[j])
                                {
@@ -482,14 +481,11 @@ void user_isr(void)
 
 		
         while(start) 
-        {                         // function for start, difficulty select
+        {                         // function for start
             count1= 0;
             T2CONCLR = 0x8000;
             screen_refresh();
-          
-
-
-            
+                     
             display_string( 0, Start1 );
             display_string( 1, Start2 );
             display_string( 2, Start3);
@@ -500,7 +496,6 @@ void user_isr(void)
 
             if(getbtns() == 0x04)
             {   
-            
                 display_string( 0, inst1 );
                 display_string( 1, inst2 );
                 display_string( 2, inst3);
@@ -508,16 +503,15 @@ void user_isr(void)
                 display_update();
                 delay(5000);
             }
-            int q =0;
+            int q = 0;
             if(getbtns() == 0x01)
             {
               q=1;
               delay(500);   
             }
-            int f =0;
+            int f = 0;
             while(q==1)
             { 
-                
                 if(getbtns() == 0x01)
                 {
                   if(f<9)
