@@ -512,7 +512,7 @@ void user_isr(void)
             if(getbtns() == 0x01)
             {
               q=1;
-              delay(100);   
+              delay(500);   
             }
             int f =0;
             while(q==1)
