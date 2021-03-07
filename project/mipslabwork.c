@@ -191,9 +191,9 @@ void bulletcol()
    {
 
        
-        if(b[j].x== box.x && b[j].y == box.y)
+        if(b[j].x== box.x && b[j].y == box.y) 
         {
-                ammo = ammo + 5;
+                ammo = ammo + 5;    //ammo box, increases ammo by 5
                 box.x = 224;
                 box.y = rand() % 4;
                 b[j].x = -1;
@@ -314,14 +314,14 @@ void ScoreUp()
 void labwork(void) {
 	switch(getbtns()) { 
 		case 0x04  :
-			if(Alpha.y > 0){ // move car up 1 pos if pushed
+			if(Alpha.y > 0){ // move ship up 1 pos if pushed
 				moveup();
 				delay( 150 );
 			}
 			
 			break;
 		case 0x02  :
-			if(Alpha.y < 3){ // move car down 1 pos if pushed
+			if(Alpha.y < 3){ // move ship down 1 pos if pushed
 				movedown();
 				delay( 150 );
 			}
