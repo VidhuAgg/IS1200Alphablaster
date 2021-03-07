@@ -1,11 +1,14 @@
 /* mipslabwork.c
 
-   This file written 2015 by Vidhu Aggarwal, Yash Dhanore
-   Updated 2021-03-06 by Vidhu aggarwal
-   
- */
+   This file written 2015 by F Lundevall
+   Updated 2017-04-21 by F Lundevall
 
-  
+   This file should be changed by YOU! So you must
+   add comment(s) here with your name(s) and date(s):
+
+   This file modified 2017-04-31 by Ture Teknolog 
+   This file modified 2018-02-xx by Oscar Eklund and Vilhelm Elofsson
+   For copyright and licensing, see file COPYING */
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "mipslab.h"  /* Declatations for these labs */
@@ -20,6 +23,10 @@ int pos = 0;
 int spawn2 = 0;
 int scoreCount = 0;
 int score = 0;
+int name1 = 0;
+int letterpos =0;
+int Highscore[12];
+
 struct Astroid{
    int x;
    int y;
@@ -44,7 +51,6 @@ struct Ship Alpha;
 struct Astroid ast[14];
 struct ammobox box;
 int count1 = 0;
-int count2=0;
 int ammo = 10;
 int counter = 0;
 struct bullet b[10];
@@ -55,27 +61,28 @@ int anim = 0;
 int test = 0;
 int anim1 = 127;
 
-char Start1[] = "Welcome!";
-char Start2[] = "Alpha-Blaster2.0";
-char Start3[] = "bt1-Instructions";
+char Start4[] = "bt3 - Highscores";
+char Start1[] = "Alpha-Blaster2.0";
+char Start2[] = "bt1-Instructions";
 int difficulty = 1;
-char Start4[] = "bt2-Start";
+char Start3[] = "bt2-Start";
 
-char gameOver[] = "Your Score:";
-char gameOver2[] = "High Score:";
-char gameOvernew[] = "Congratulations!";
-char gameOvernew1[] = "New High Score:";
+char gameOver[] = "bt1 to continue";
+char savescore[] = "Enter name:";
+char nameinst[] = "bt 1- change letter";
+char nameinst1[] = "bt 2- save letter";
 int mainload = 1;
 char inst1[] = "bt 1 - Go up";
 char inst2[] = "bt 2 - Go Down";
 char inst3[] = "bt 3 - Fire!";
 char inst4[] = "boxes have ammo";
-
+char inst5[] = "<-1,(exit),3->";
 
 
 int gameovercheck = 0;
-char buffer[5];
-char buffer2[5]; 
+char buffer[5]; 
+char Name[3];
+char Score[12][15];
 
 
 char clear[] = " ";
@@ -128,14 +135,7 @@ void movedown()
         Alpha.y ++;
     }
 }
-int HighScore()
-{
-    if(count1>count2)
-    {
-        count2 = count1;
-    }
-    return count2;
-}
+
 void screen_refresh()
 {
     int j;
@@ -379,37 +379,104 @@ void user_isr(void)
                    mainload=0;  
                 }                  
 		
-		while (gameovercheck && health ==0)
-               {                               // function for when car has collided, gameover
+		while (gameovercheck == 1 && health == 0)
+                {                               // function for when car has collided, gameover
 			T2CONCLR = 0x8000;
 			screen_refresh();
+                        letterpos = 0;
                         sprintf(buffer,"%d",count1);
-			display_string( 0, gameOver );
-			display_string( 1, buffer );
-                        sprintf(buffer2,"%d",count2);
-                        display_string( 2, gameOver2 );
-                        display_string( 3, buffer2 );
-                        if(count1 == count2)
-                        {
-                        
-			display_string( 0, gameOvernew );
-                        sprintf(buffer2,"%d",count2);
-                        display_string( 1, clear );
-                        display_string( 2, gameOvernew1 );
-                        display_string( 3, buffer2 );
- 
-                        }
+                        display_image(0,Screen);
+                        display_string( 0, gameOver);
+ 			display_string( 1, clear);
+			display_string( 2, clear);
+			display_string( 3, clear);
 			display_update();	
-			if(getbtns() == 0x04)
-                        {                       // restart if button pushed
-			
-				spawnflag = 0;
-				start = 1;
-				gameovercheck = 0;
-				delay(300);
-				T2CONSET = 0x8000;
-			}
-		}
+			name1 = 64;
+                        Name[0]=clear[0];
+                        Name[1]=clear[0];
+                        Name[2]=clear[0];
+                        while(letterpos < 3)
+                        {
+                            if(getbtns() == 0x04)
+                            {                       // restart if button pushed
+			        name1++;
+                                if(name1>90)
+                                {
+                                  name1 = 65;
+                                }
+                        	char c = name1;
+                        	Name[letterpos] = c;
+                        	display_string( 0, savescore );
+                        	display_string( 1, nameinst );
+                        	display_string( 2, nameinst1 );
+                        	display_string( 3, Name );
+                                display_update();
+                                
+                                delay(150);
+                            }
+                            if(getbtns() == 0x02)
+                            {                       // restart if button pushed
+		          	
+                                letterpos++;
+                                
+                          	name1 = 65;
+                                char c = name1;
+                        	
+                                if(letterpos<3)
+                                {
+                                	Name[letterpos] = c;
+                                        display_string( 0, savescore );
+                        		display_string( 1, nameinst );
+                        		display_string( 2, nameinst1 );
+                        		display_string( 3, Name );
+                                	display_update();
+                                }
+                                delay(150);
+                                
+			    }
+                        }
+                        int j = 0;
+                        int temp = 0;
+                        for(j = 0; j<12;j++)
+                        { 
+                               if(count1>Highscore[j])
+                               {
+                               		temp = j;
+ 					break;
+			       }
+                        }
+                        int v;
+                        for(j = 11; j > temp;j--)
+                        {
+                             Highscore[j]=Highscore[j-1];
+                             for(v =0;v<15;v++)
+                             {
+                             	Score[j][v] = Score[j-1][v];
+                             }
+                        }
+                        Highscore[temp] = count1;
+
+                        
+                        for(v = 0; v<3;v++)
+                        {
+                            Score[temp][v] = Name[v]; 
+                        }
+                        Score[temp][3] = clear[0];
+                        Score[temp][4] = clear[0];
+			Score[temp][5] = clear[0];
+                        for(v = 6; v< 11;v++)
+                        {
+                            int s = v-6;
+                            Score[temp][v] = buffer[s]; 
+                        }
+
+                        spawnflag = 0;
+			start = 1;
+			gameovercheck = 0;
+			delay(300);
+			T2CONSET = 0x8000;
+		         
+                }
 
 
 		
@@ -439,10 +506,48 @@ void user_isr(void)
                 display_string( 3, inst4 );
                 display_update();
                 delay(5000);
+            }
+            int q =0;
+            if(getbtns() == 0x01)
+            {
+              q=1;
+              delay(100);   
+            }
+            int f =0;
+            while(q==1)
+            { 
                 
-              
-                 
+                if(getbtns() == 0x01)
+                {
+                  if(f<9)
+                  {
+                    f = f+3;
+                    delay(150);
+                  }
+                }
+                if(getbtns() == 0x04)
+                {
+                  if(f>0)
+                  {
+                    f = f-3;
+                    delay(150);
+                  }
+                }
+                display_string( 0, Score[0+f] );
+                display_string( 1, Score[1+f] );
+                display_string( 2, Score[2+f]);
+                display_string( 3, inst5 );
+                display_update();
+                  
+                      
+                if(getbtns() == 0x02)
+            		{
+                	     q=0;
+                             delay(200);	
+                             break;
+                        }
                 
+                     
             }
 		
             if(getbtns() == 0x02)
@@ -453,6 +558,7 @@ void user_isr(void)
                      display_image(0,Screen);
                      start = 0;
                      T2CONSET = 0x8000;
+                     delay(100);
                      break;
             }
         
@@ -478,10 +584,10 @@ void user_isr(void)
             gameovercheck = Astroidcollison();             
             diffauto++;
             ScoreUp();
-            HighScore();
+           
             
             
         }
-    }	
-	
+    	
+     }	
 }
